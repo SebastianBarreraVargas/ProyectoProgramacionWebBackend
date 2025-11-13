@@ -1,4 +1,5 @@
 import { MongoClient, type Db } from 'mongodb';
+import mongoose from 'mongoose';
 
 let client: MongoClient | null = null;
 let db: Db | null = null;
@@ -17,6 +18,13 @@ export async function connectDB(): Promise<Db> {
     }
     await client.connect();
     db = client.db(process.env.DB_NAME);
+    if(mongoose.connection.readyState === 0){
+      const mongooseOpts: Record<string, unknown>={};
+      if(process.env.DB_NAME){
+        mongooseOpts.dbName = process.env.DB_NAME;
+      }
+      await mongoose.connect(uri, mongooseOpts as any);
+    }
     return db;
   } catch (error) {
     console.error('Failed to connect to the database', error);
@@ -31,6 +39,9 @@ export async function closeDB(): Promise<void> {
       client = null;
     }
     db = null;
+    if(mongoose.connection.readyState !== 0){
+      await mongoose.disconnect();
+    }
     console.log('MongoDB connection closed');
   } catch (error) {
     console.error('Error closing MongoDB connection:', error);

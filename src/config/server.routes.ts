@@ -6,7 +6,7 @@ import UserRoutes from '../modules/user/user.routes';
 const router = Router();
 
 router.use('/api', HealthRoutes);
-router.use('/api/users', UserRoutes);
+router.use('/api/user', UserRoutes);
 
 router.use((req, res) => {
   console.log('Not found:', req.method, req.originalUrl);
