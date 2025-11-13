@@ -5,8 +5,8 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     age : { type: Number, required: false, default: 0 },
     handle_name : { type: String, required: false, unique: true},
-    active : { type: Boolean, required: true, default: true },
-    id_role : { type: mongoose.Schema.Types.ObjectId, ref: 'Role', required: true }
+    active : { type: Boolean, required: false, default: true },
+    id_role : { type: mongoose.Schema.Types.ObjectId, ref: 'Role', required: false }
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
