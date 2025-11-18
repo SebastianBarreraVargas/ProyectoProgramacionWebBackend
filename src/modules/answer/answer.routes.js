@@ -1,18 +1,17 @@
-import { Router } from 'express';
+import { Router } from "express";
 import {
-  createAnswerController,
-  getAllAnswersController,
-  getAnswerByIdController,
-  updateAnswerController,
-  deleteAnswerController
-} from './answer.controller.js';
-
+  createAnswer,
+  getAnswers,
+  getAnswer,
+  updateAnswer,
+  deleteAnswer
+} from "./answer.controller.js"; 
 const router = Router();
 
-router.post('/', createAnswerController);
-router.get('/', getAllAnswersController);
-router.get('/:id', getAnswerByIdController);
-router.put('/:id', updateAnswerController);
-router.delete('/:id', deleteAnswerController);
+router.post("/", createAnswer);
+router.get("/", getAnswers);
+router.get("/:id", getAnswer);
+router.put("/:id", updateAnswer);
+router.delete("/:id", deleteAnswer);
 
 export default router;

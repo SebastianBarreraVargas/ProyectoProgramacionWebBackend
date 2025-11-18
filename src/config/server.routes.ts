@@ -10,21 +10,10 @@ import TestRoutes from '../modules/test/test.routes.js';
 import TestQuestionsRoutes from '../modules/testQuestions/testQuestions.routes.js';
 // @ts-ignore: missing declaration file for JS module
 import QuestionRoutes from '../modules/question/question.routes.js';
-// @ts-ignore: missing declaration file for JS module
-import QuestionTypeRoutes from '../modules/questionType/questionType.routes.js';
-// @ts-ignore: missing declaration file for JS module
-import OptionRoutes from '../modules/option/option.routes.js';
-// @ts-ignore: missing declaration file for JS module
-import OptionAnswerRoutes from '../modules/optionAnswer/optionAnswer.routes.js';
-// @ts-ignore: missing declaration file for JS module
-import AnswerRoutes from '../modules/answer/answer.routes.js';
-// @ts-ignore: missing declaration file for JS module
-import OwnAnswerRoutes from '../modules/ownAnswer/ownAnswer.routes.js';
 // @ts-ignore
-import InteractiveOwnAnswerRoutes from '../modules/interactiveOwnAnswer/interactiveOwnAnswer.routes.js';
+import questionTypeRoutes from "../modules/questionType/questionType.routes.js";
 // @ts-ignore
-import answerOwnOptionRoutes from "./routes/answerOwnOption.routes.js";
-
+import answerRoutes from "../modules/answer/answer.routes.js";
 const router = Router();
 
 router.use('/api', HealthRoutes);
@@ -33,13 +22,8 @@ router.use('/api/role', RoleRoutes);
 router.use('/api/test', TestRoutes);
 router.use('/api/testQuestions', TestQuestionsRoutes);
 router.use('/api/question', QuestionRoutes);
-router.use('/api/questionType', QuestionTypeRoutes);
-router.use('/api/option', OptionRoutes);
-router.use('/api/optionAnswer', OptionAnswerRoutes);
-router.use('/api/answer', AnswerRoutes);
-router.use('/api/ownAnswer', OwnAnswerRoutes);
-router.use('/api/interactiveOwnAnswer', InteractiveOwnAnswerRoutes);
-router.use("/api/answerOwnOption", answerOwnOptionRoutes);
+router.use("/api/answer", answerRoutes);
+router.use("/api/questionType", questionTypeRoutes);
 
 router.use((req, res) => {
   console.log('Not found:', req.method, req.originalUrl);

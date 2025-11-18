@@ -1,46 +1,23 @@
-import Answer from '../../models/answer.model.js';
+import Answer from "../../models/Answer.js"; 
+export default {
+  async createAnswer(data) {
+    const answer = new Answer(data);
+    return await answer.save();
+  },
 
-export async function createAnswer(data) {
-  try {
-    const newEntry = new Answer(data);
-    return await newEntry.save();
-  } catch (error) {
-    throw new Error('Error creating Answer: ' + error.message);
-  }
-}
+  async getAllAnswers() {
+    return await Answer.find().populate("id_question");
+  },
 
-export async function getAllAnswers() {
-  try {
-    return await Answer.find()
-      .populate('id_question', 'statement')
-      .populate('id_QuestionType', 'name_type');
-  } catch (error) {
-    throw new Error('Error fetching Answers: ' + error.message);
-  }
-}
+  async getAnswerById(id) {
+    return await Answer.findById(id).populate("id_question");
+  },
 
-export async function getAnswerById(id) {
-  try {
-    return await Answer.findById(id)
-      .populate('id_question', 'statement')
-      .populate('id_QuestionType', 'name_type');
-  } catch (error) {
-    throw new Error('Error fetching Answer: ' + error.message);
-  }
-}
+  async updateAnswer(id, data) {
+    return await Answer.findByIdAndUpdate(id, data, { new: true });
+  },
 
-export async function updateAnswer(id, updateData) {
-  try {
-    return await Answer.findByIdAndUpdate(id, updateData, { new: true });
-  } catch (error) {
-    throw new Error('Error updating Answer: ' + error.message);
-  }
-}
-
-export async function deleteAnswer(id) {
-  try {
+  async deleteAnswer(id) {
     return await Answer.findByIdAndDelete(id);
-  } catch (error) {
-    throw new Error('Error deleting Answer: ' + error.message);
   }
-}
+};
