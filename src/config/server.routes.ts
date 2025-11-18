@@ -18,6 +18,8 @@ import OptionRoutes from '../modules/option/option.routes.js';
 import OptionAnswerRoutes from '../modules/optionAnswer/optionAnswer.routes.js';
 // @ts-ignore: missing declaration file for JS module
 import AnswerRoutes from '../modules/answer/answer.routes.js';
+// @ts-ignore: missing declaration file for JS module
+import OwnAnswerRoutes from '../modules/ownAnswer/ownAnswer.routes.js';
 
 const router = Router();
 
@@ -31,6 +33,7 @@ router.use('/api/questionType', QuestionTypeRoutes);
 router.use('/api/option', OptionRoutes);
 router.use('/api/optionAnswer', OptionAnswerRoutes);
 router.use('/api/answer', AnswerRoutes);
+router.use('/api/ownAnswer', OwnAnswerRoutes);
 
 router.use((req, res) => {
   console.log('Not found:', req.method, req.originalUrl);
