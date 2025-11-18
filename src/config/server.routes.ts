@@ -22,6 +22,8 @@ import AnswerRoutes from '../modules/answer/answer.routes.js';
 import OwnAnswerRoutes from '../modules/ownAnswer/ownAnswer.routes.js';
 // @ts-ignore
 import InteractiveOwnAnswerRoutes from '../modules/interactiveOwnAnswer/interactiveOwnAnswer.routes.js';
+// @ts-ignore
+import answerOwnOptionRoutes from "./routes/answerOwnOption.routes.js";
 
 const router = Router();
 
@@ -37,7 +39,7 @@ router.use('/api/optionAnswer', OptionAnswerRoutes);
 router.use('/api/answer', AnswerRoutes);
 router.use('/api/ownAnswer', OwnAnswerRoutes);
 router.use('/api/interactiveOwnAnswer', InteractiveOwnAnswerRoutes);
-
+router.use("/api/answerOwnOption", answerOwnOptionRoutes);
 
 router.use((req, res) => {
   console.log('Not found:', req.method, req.originalUrl);
