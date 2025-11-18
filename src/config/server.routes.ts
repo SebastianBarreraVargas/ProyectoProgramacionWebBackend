@@ -12,6 +12,8 @@ import TestQuestionsRoutes from '../modules/testQuestions/testQuestions.routes.j
 import QuestionRoutes from '../modules/question/question.routes.js';
 // @ts-ignore: missing declaration file for JS module
 import QuestionTypeRoutes from '../modules/questionType/questionType.routes.js';
+// @ts-ignore: missing declaration file for JS module
+import OptionRoutes from '../modules/option/option.routes.js';
 
 const router = Router();
 
@@ -22,6 +24,7 @@ router.use('/api/test', TestRoutes);
 router.use('/api/testQuestions', TestQuestionsRoutes);
 router.use('/api/question', QuestionRoutes);
 router.use('/api/questionType', QuestionTypeRoutes);
+router.use('/api/option', OptionRoutes);
 
 router.use((req, res) => {
   console.log('Not found:', req.method, req.originalUrl);
