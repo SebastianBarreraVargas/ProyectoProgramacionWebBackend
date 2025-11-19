@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
-const answerAgeClassificationSchema = new mongoose.Schema(
+const QuestionAgeClassificationSchema = new mongoose.Schema(
     {
-        id_answer: { 
+        id_question: { 
             type: mongoose.Schema.Types.ObjectId, 
-            ref: 'Answer', 
+            ref: 'Question', 
             required: true 
         },
         id_age_classification: { 
@@ -15,5 +15,5 @@ const answerAgeClassificationSchema = new mongoose.Schema(
     }, { timestamps: true }
 );
 
-const AnswerAgeClassification = mongoose.model('AnswerAgeClassification', answerAgeClassificationSchema);
-export default AnswerAgeClassification;
+const QuestionAgeClassification = mongoose.model('QuestionAgeClassification', QuestionAgeClassificationSchema);
+export default QuestionAgeClassification;

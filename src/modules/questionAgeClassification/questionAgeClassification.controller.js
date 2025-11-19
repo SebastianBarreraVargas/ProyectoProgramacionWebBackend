@@ -4,12 +4,12 @@ import {
     getAnswerAgeClassificationById,
     updateAnswerAgeClassification,
     deleteAnswerAgeClassification
-} from "./answerAgeClassification.service.js";
+} from "./questionAgeClassification.service.js";
 
 export const createAACController = async (req, res) => {
     try {
         const newEntry = await createAnswerAgeClassification(req.body);
-        res.status(201).json({ message: "AnswerAgeClassification created", data: newEntry });
+        res.status(201).json({ message: "QuestionAgeClassification created", data: newEntry });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

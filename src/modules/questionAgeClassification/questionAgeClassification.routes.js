@@ -5,7 +5,7 @@ import {
     getAACByIdController,
     updateAACController,
     deleteAACController
-} from "./answerAgeClassification.controller.js";
+} from "./questionAgeClassification.controller.js";
 
 const router = Router();
 

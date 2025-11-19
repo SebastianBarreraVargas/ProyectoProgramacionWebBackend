@@ -1,4 +1,4 @@
-import AnswerAgeClassification from "../../models/AnswerAgeClassification.js";
+import AnswerAgeClassification from "../../models/QuestionAgeClassification.js";
 
 export const createAnswerAgeClassification = async (data) => {
     try {

@@ -15,7 +15,7 @@ import questionTypeRoutes from "../modules/questionType/questionType.routes.js";
 // @ts-ignore
 import answerRoutes from "../modules/answer/answer.routes.js";
 // @ts-ignore
-import AnswerAgeClassificationRoutes from "../modules/answerAgeClassification/answerAgeClassification.routes.js";
+import AnswerAgeClassificationRoutes from "../modules/questionAgeClassification/questionAgeClassification.routes.js";
 // @ts-ignore
 import ageClassificationRoutes from "../modules/ageClassification/ageClassification.routes.js";
 
@@ -29,7 +29,7 @@ router.use('/api/testQuestions', TestQuestionsRoutes);
 router.use('/api/question', QuestionRoutes);
 router.use("/api/answer", answerRoutes);
 router.use("/api/questionType", questionTypeRoutes);
-router.use("/api/answerAgeClassification", AnswerAgeClassificationRoutes);
+router.use("/api/questionAgeClassification", AnswerAgeClassificationRoutes);
 router.use("/api/ageClassification", ageClassificationRoutes);
 
 router.use((req, res) => {
