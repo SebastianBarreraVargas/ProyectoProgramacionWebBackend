@@ -14,6 +14,9 @@ import QuestionRoutes from '../modules/question/question.routes.js';
 import questionTypeRoutes from "../modules/questionType/questionType.routes.js";
 // @ts-ignore
 import answerRoutes from "../modules/answer/answer.routes.js";
+// @ts-ignore
+import AnswerAgeClassificationRoutes from "../modules/answerAgeClassification/answerAgeClassification.routes.js";
+
 const router = Router();
 
 router.use('/api', HealthRoutes);
@@ -24,6 +27,7 @@ router.use('/api/testQuestions', TestQuestionsRoutes);
 router.use('/api/question', QuestionRoutes);
 router.use("/api/answer", answerRoutes);
 router.use("/api/questionType", questionTypeRoutes);
+router.use("/api/answerAgeClassification", AnswerAgeClassificationRoutes);
 
 router.use((req, res) => {
   console.log('Not found:', req.method, req.originalUrl);
