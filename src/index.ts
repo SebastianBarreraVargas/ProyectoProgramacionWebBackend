@@ -1,11 +1,11 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import Server from './config/server.config.js';
+import Server from './config/server.config';
 
-import { SERVER_PORT } from './config/env.config.js';
+import { SERVER_PORT } from './config/env.config';
 
-import { connectDB } from './config/db/mongoClient.js';
+import { connectDB } from './config/db/mongoClient';
 
 async function startServer() {
   try {

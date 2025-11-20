@@ -23,7 +23,7 @@ export async function connectDB(): Promise<Db> {
       if(process.env.DB_NAME){
         mongooseOpts.dbName = process.env.DB_NAME;
       }
-      await mongoose.connect(uri, mongooseOpts as any);
+      await mongoose.connect(uri, mongooseOpts);
     }
     return db;
   } catch (error) {

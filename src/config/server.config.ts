@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import AppRoutes from './server.routes.js';
-import { getDB } from './db/mongoClient.js';
+import AppRoutes from './server.routes';
+import { getDB } from './db/mongoClient';
 
 const app = express();
 
