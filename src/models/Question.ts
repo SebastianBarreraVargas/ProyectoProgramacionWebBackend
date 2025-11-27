@@ -30,3 +30,8 @@ const QuestionSchema = new mongoose.Schema(
     }, 
     { timestamps: true }
 );
+
+QuestionSchema.index({ id_question_type: 1 }, { unique: true });
+
+const Question = mongoose.model('Question', QuestionSchema);
+export default Question;
