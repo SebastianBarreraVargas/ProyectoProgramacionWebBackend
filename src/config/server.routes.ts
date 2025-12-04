@@ -8,6 +8,7 @@ import QuestionRoutes from '../routes/question.routes';
 import HealthRoutes from '../routes/health.routes';
 import TokenRoutes from '../routes/token.routes'
 import UserRoutes from '../routes/user.routes';
+import RoleRoutes from '../routes/role.routes';
 
 const router = Router();
 
@@ -20,6 +21,7 @@ router.use('/api/question', QuestionRoutes);
 router.use('/api/health', HealthRoutes);
 router.use('/api/token', TokenRoutes);
 router.use('/api/user', UserRoutes);
+router.use('/api/role', RoleRoutes);
 
 router.use((req, res) => {
   console.log('Not found:', req.method, req.originalUrl);
