@@ -35,11 +35,11 @@ export async function sendToken(req: Request, res: Response) {
     const token = jwt.sign({
         id_us,
         username,
-    }, secret as string, { expiresIn: '24h' });
+    }, secret as string, { expiresIn: '15m' });
     return res.status(200).json({
         success: true,
         message: 'Token generado correctamente',
-        token: token 
+        token: token
     });
 }
 
@@ -51,7 +51,7 @@ export async function publicToken(req: Request, res: Response) {
 
 export async function privateToken(req: Request, res: Response) {
     try {
-        const token = req.headers.authorization?.split(" ")[1];
+        const token = req.headers.authorization?.split(" ")[1] || req.query.token;
         if (!token || typeof token !== 'string') {
             return res.status(400).json({
                 success: false,
@@ -64,10 +64,10 @@ export async function privateToken(req: Request, res: Response) {
         };
         return res.status(200).json({
             success: true,
-            message: 'Datos privado accesados correctamente a traves del token valido',
+            message: 'Datos privados accesados correctamente a traves del token valido',
             data: payload
         })
-    }catch (err) {
+    } catch (err) {
         if (err instanceof jwt.TokenExpiredError) {
             return res.status(400).json({
                 success: false,

@@ -3,21 +3,21 @@ import User from '../models/User';
 
 interface UserParameter {
     username: string;
-    email: string; 
+    email: string;
     age: number;
-    handle_name: string;       
-    active: boolean;
+    handle_name: string;
+    active: boolean | null;
     id_role: mongoose.Schema.Types.ObjectId
 }
 
 export async function createUser(userData: UserParameter) {
-   try {
-       const newUser = new User(userData);
-       await newUser.save();
-       return { result: true, message_state: 'User created successfully' };
-   } catch (error) {
-       throw new Error('Error creating user: ' + (error as Error).message);
-   }
+    try {
+        const newUser = new User(userData);
+        await newUser.save();
+        return { result: true, message_state: 'User created successfully' };
+    } catch (error) {
+        throw new Error('Error creating user: ' + (error as Error).message);
+    }
 }
 
 export async function get_user_by_id(id_us: string) {
