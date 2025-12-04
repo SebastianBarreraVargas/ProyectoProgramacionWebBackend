@@ -17,7 +17,7 @@ router.use('/api/question_type', QuestionTypeRoutes);
 router.use('/api/subject', SubjectRoutes);
 router.use('/api/question', QuestionRoutes);
 router.use('/api/health', HealthRoutes);
-router.use('api/token', TokenRoutes);
+router.use('/api/token', TokenRoutes);
 
 router.use((req, res) => {
   console.log('Not found:', req.method, req.originalUrl);

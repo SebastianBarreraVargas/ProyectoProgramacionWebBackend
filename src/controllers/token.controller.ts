@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 
 export async function sendToken(req: Request, res: Response) {
     const token = null;
-    res.send({ token })
+    res.status(200).json({
+        token: token 
+    });
 }
 
 export async function publicToken(req: Request, res: Response) {
