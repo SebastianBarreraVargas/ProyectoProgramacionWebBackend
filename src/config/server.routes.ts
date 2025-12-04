@@ -5,15 +5,17 @@ import QuestionTypeRoutes from '../routes/questionType.routes';
 import AreaRoutes from '../routes/area.routes';
 import SubjectRoutes from '../routes/subject.routes';
 import QuestionRoutes from '../routes/question.routes';
+import HealthRoutes from '../routes/health.routes';
 
 const router = Router();
 
-router.use('/age_classification', AgeClassificationRoutes);
-router.use('/question_age_classification', QuestionAgeClassificationRoutes);
-router.use('/area', AreaRoutes);
-router.use('/question_type', QuestionTypeRoutes);
-router.use('/subject', SubjectRoutes);
-router.use('/question', QuestionRoutes);
+router.use('/api/age_classification', AgeClassificationRoutes);
+router.use('/api/question_age_classification', QuestionAgeClassificationRoutes);
+router.use('/api/area', AreaRoutes);
+router.use('/api/question_type', QuestionTypeRoutes);
+router.use('/api/subject', SubjectRoutes);
+router.use('/api/question', QuestionRoutes);
+router.use('/api/health', HealthRoutes)
 
 router.use((req, res) => {
   console.log('Not found:', req.method, req.originalUrl);
