@@ -83,7 +83,7 @@ export async function privateToken(req: Request, res: Response) {
                 error: (err as Error).message
             });
         }
-        return res.status(400).json({
+        return res.status(500).json({
             success: false,
             message: 'Error al acceder a los datos a traves del token',
             error: (err as Error).message
