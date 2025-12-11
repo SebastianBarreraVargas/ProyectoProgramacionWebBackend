@@ -5,8 +5,6 @@ const router = Router();
 
 router.post('/send', TokenController.sendToken);
 
-router.get('/public', TokenController.publicToken);
-
 router.get('/private', TokenController.privateToken);
 
 export default router;

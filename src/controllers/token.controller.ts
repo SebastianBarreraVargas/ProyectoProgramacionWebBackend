@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken';
 import * as UserService from '../services/user.service'
 
@@ -9,6 +9,18 @@ const secret = process.env.SECRET;
 
 if (!secret) {
     throw new Error('SECRET no está definido en las variables de entorno');
+}
+
+interface UserPayload {
+    id_us: string;
+    username: string;
+    role?: string;
+}
+
+declare module 'express-serve-static-core' {
+    interface Request {
+        user?: UserPayload;
+    }
 }
 
 export async function sendToken(req: Request, res: Response) {
@@ -40,12 +52,6 @@ export async function sendToken(req: Request, res: Response) {
         success: true,
         message: 'Token generado correctamente',
         token: token
-    });
-}
-
-export async function publicToken(req: Request, res: Response) {
-    res.status(200).json({
-        message: 'Publico'
     });
 }
 
@@ -89,4 +95,25 @@ export async function privateToken(req: Request, res: Response) {
             error: (err as Error).message
         })
     }
+}
+
+export async function verifyToken(req: Request, res: Response, next: NextFunction) {
+    const token = req.headers['authorization'] || req.query.token;
+    if (!token || typeof token !== 'string') {
+        return res.status(400).json({
+            success: false,
+            message: 'Error, token no proporcionado'
+        });
+    }
+    jwt.verify(token, secret as string, (err, user) => {
+        if (err) {
+            return res.status(401).json({
+                success: false,
+                message: 'Acceso denegado al servicio, autenticacion fallida por token expirado o incorrecto'
+            });
+        } else {
+            req.user = user as UserPayload;
+            next();
+        }
+    });
 }
