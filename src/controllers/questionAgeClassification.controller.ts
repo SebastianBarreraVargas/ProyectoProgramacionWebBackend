@@ -1,25 +1,25 @@
 import { Request, Response } from "express";
 import * as QuestionAgeClassificationService from "../services/questionAgeClassification.service";
 
-const validatePayload = (body: any): string[] => {
+interface AACPayload {
+    id_question: string;
+    id_age_classification: string;
+}
+
+const validatePayload = (body: AACPayload): string[] => {
     const errors: string[] = [];
     if (!body || typeof body !== "object") {
         errors.push("Cuerpo de la petición inválido");
         return errors;
     }
 
-    if (body.id_answer === undefined || body.id_answer === null || typeof body.id_answer !== "string" || !body.id_answer.trim()) {
-        errors.push("El campo 'id_answer' es requerido y debe ser una cadena no vacía");
+    if (body.id_question === undefined || body.id_question === null || !body.id_question.trim()) {
+        errors.push("El campo 'id_question' es requerido y debe ser una cadena no vacía");
     }
 
-    if (body.id_age_classification === undefined || body.id_age_classification === null || typeof body.id_age_classification !== "string" || !body.id_age_classification.trim()) {
+    if (body.id_age_classification === undefined || body.id_age_classification === null || !body.id_age_classification.trim()) {
         errors.push("El campo 'id_age_classification' es requerido y debe ser una cadena no vacía");
     }
-
-    if (body.notes !== undefined && body.notes !== null && typeof body.notes !== "string") {
-        errors.push("El campo 'notes' debe ser una cadena si se proporciona");
-    }
-
     return errors;
 };
 
