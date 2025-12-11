@@ -1,19 +1,19 @@
 import { Request, Response } from "express";
 import * as QuestionService from "../services/question.service";
 
-const validatePayload = (body: any): string[] => {
+const validatePayload = (body: { statement: string; score: number; status?: string; answers?: string[]; }): string[] => {
     const errors: string[] = [];
     if (!body || typeof body !== "object") {
         errors.push("Cuerpo de la petición inválido");
         return errors;
     }
 
-    if (!body.text || typeof body.text !== "string" || !body.text.trim()) {
-        errors.push("El campo 'text' es requerido y debe ser una cadena no vacía");
+    if (!body.statement || typeof body.statement !== "string" || !body.statement.trim()) {
+        errors.push("El campo 'statement' es requerido y debe ser una cadena no vacía");
     }
 
-    if (body.id_question_type === undefined || body.id_question_type === null || typeof body.id_question_type !== "string" || !body.id_question_type.trim()) {
-        errors.push("El campo 'id_question_type' es requerido y debe ser una cadena no vacía");
+    if (body.score === undefined || body.score === null || typeof body.score !== "number" || Number.isNaN(body.score)) {
+        errors.push("El campo 'score' es requerido y debe ser un número");
     }
 
     if (body.status !== undefined) {
@@ -22,17 +22,11 @@ const validatePayload = (body: any): string[] => {
         }
     }
 
-    if (body.difficulty !== undefined) {
-        if (typeof body.difficulty !== "string" || !['low', 'medium', 'high'].includes(body.difficulty)) {
-            errors.push("El campo 'difficulty' inválido. Debe ser 'low', 'medium' o 'high'");
-        }
-    }
-
     if (body.answers !== undefined) {
         if (!Array.isArray(body.answers) || body.answers.length === 0) {
             errors.push("El campo 'answers' debe ser un arreglo no vacío");
         } else {
-            body.answers.forEach((a: any, i: number) => {
+            body.answers.forEach((a: string, i: number) => {
                 if (!a || typeof a !== "string" || !a.trim()) {
                     errors.push(`La respuesta en 'answers' índice ${i} debe ser una cadena no vacía`);
                 }

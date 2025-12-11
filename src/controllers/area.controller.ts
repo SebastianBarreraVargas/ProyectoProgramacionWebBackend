@@ -1,23 +1,15 @@
 import { Request, Response } from "express";
 import * as AreaService from "../services/area.service";
 
-const validatePayload = (body: any): string[] => {
+const validatePayload = (body: { area_name: string; descripcion?: string; }): string[] => {
     const errors: string[] = [];
     if (!body || typeof body !== "object") {
         errors.push("Cuerpo de la petición inválido");
         return errors;
     }
 
-    if (!body.name || typeof body.name !== "string" || !body.name.trim()) {
-        errors.push("El campo 'name' es requerido y debe ser una cadena no vacía");
-    }
-
-    if (body.id_materia === undefined || body.id_materia === null || typeof body.id_materia !== "string" || !body.id_materia.trim()) {
-        errors.push("El campo 'id_materia' es requerido y debe ser una cadena no vacía");
-    }
-
-    if (body.descripcion !== undefined && body.descripcion !== null && typeof body.descripcion !== "string") {
-        errors.push("El campo 'descripcion' debe ser una cadena si se proporciona");
+    if (!body.area_name || typeof body.area_name !== "string" || !body.area_name.trim()) {
+        errors.push("El campo 'area_name' es requerido y debe ser una cadena no vacía");
     }
 
     return errors;

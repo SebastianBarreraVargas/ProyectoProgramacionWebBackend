@@ -1,21 +1,14 @@
-// ...existing code...
 import { Request, Response } from "express";
 import * as SubjectService from "../services/subject.service";
 
-const validatePayload = (body: any): string[] => {
+const validatePayload = (body: { materia_name: string; description?: string; }): string[] => {
     const errors: string[] = [];
     if (!body || typeof body !== "object") {
         errors.push("Cuerpo de la petición inválido");
         return errors;
     }
-    if (!body.name || typeof body.name !== "string" || !body.name.trim()) {
-        errors.push("El campo 'name' es requerido y debe ser una cadena no vacía");
-    }
-    if (body.code !== undefined && body.code !== null && typeof body.code !== "string") {
-        errors.push("El campo 'code' debe ser una cadena si se proporciona");
-    }
-    if (body.description !== undefined && body.description !== null && typeof body.description !== "string") {
-        errors.push("El campo 'description' debe ser una cadena si se proporciona");
+    if (!body.materia_name || typeof body.materia_name !== "string" || !body.materia_name.trim()) {
+        errors.push("El campo 'materia_name' es requerido y debe ser una cadena no vacía");
     }
     return errors;
 };
