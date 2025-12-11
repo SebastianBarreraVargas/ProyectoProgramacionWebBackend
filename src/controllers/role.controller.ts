@@ -31,11 +31,13 @@ export async function createRoleController(req: Request, res: Response) {
 
 export async function getAllRoles(req: Request, res: Response) {
     try {
+        const user_payload = req.user;
         const roles = await RoleService.get_all_roles();
         if (roles.result) {
             return res.status(200).json({
                 success: true,
                 message: roles.message,
+                user_data: user_payload,
                 data: roles.data
             });
         } else {

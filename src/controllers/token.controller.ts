@@ -11,6 +11,18 @@ if (!secret) {
     throw new Error('SECRET no está definido en las variables de entorno');
 }
 
+interface UserPayload {
+    id_us: string;
+    username: string;
+    role?: string;
+}
+
+declare module 'express-serve-static-core' {
+    interface Request {
+        user?: UserPayload;
+    }
+}
+
 export async function sendToken(req: Request, res: Response) {
     const { id_us, username } = req.query;
     if (!id_us || typeof id_us !== 'string') {
@@ -93,13 +105,14 @@ export async function verifyToken(req: Request, res: Response, next: NextFunctio
             message: 'Error, token no proporcionado'
         });
     }
-    jwt.verify(token, secret as string, (err) => {
+    jwt.verify(token, secret as string, (err, user) => {
         if (err) {
             return res.status(401).json({
                 success: false,
                 message: 'Acceso denegado al servicio, autenticacion fallida por token expirado o incorrecto'
             });
         } else {
+            req.user = user as UserPayload;
             next();
         }
     });
