@@ -1,4 +1,4 @@
-import QuestionType from '../models/AgeClassification';
+import QuestionType from '../models/QuestionType';
 
 export async function createQuestionType(data: string) {
   try {

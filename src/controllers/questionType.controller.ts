@@ -6,14 +6,14 @@ const validateId = (id?: string): string | null => {
   return null;
 };
 
-const validatePayload = (body: { name: string; }): string[] => {
+const validatePayload = (body: { name_type: string; }): string[] => {
   const errors: string[] = [];
   if (!body || typeof body !== 'object') {
     errors.push('Cuerpo de la petición inválido');
     return errors;
   }
-  if (!body.name || typeof body.name !== 'string' || !body.name.trim()) {
-    errors.push("El campo 'name' es requerido y debe ser una cadena no vacía");
+  if (!body.name_type || typeof body.name_type !== 'string' || !body.name_type.trim()) {
+    errors.push("El campo 'name_type' es requerido y debe ser una cadena no vacía");
   }
   return errors;
 };
