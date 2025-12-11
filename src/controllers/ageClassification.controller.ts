@@ -1,29 +1,29 @@
 import { Request, Response } from "express";
 import * as AgeClassificationService from "../services/ageClassification.service";
 
-const validatePayload = (body: any): string[] => {
+const validatePayload = (body: { desc_classification: string; starting_age: number; ending_age: number; }): string[] => {
     const errors: string[] = [];
     if (!body || typeof body !== "object") {
         errors.push("Cuerpo de la petición inválido");
         return errors;
     }
 
-    if (!body.name || typeof body.name !== "string" || !body.name.trim()) {
+    if (!body.desc_classification || typeof body.desc_classification !== "string" || !body.desc_classification.trim()) {
         errors.push("El campo 'name' es requerido y debe ser una cadena no vacía");
     }
 
-    if (body.minAge === undefined || typeof body.minAge !== "number" || Number.isNaN(body.minAge)) {
-        errors.push("El campo 'minAge' es requerido y debe ser un número");
+    if (body.starting_age === undefined || typeof body.starting_age !== "number" || Number.isNaN(body.starting_age)) {
+        errors.push("El campo 'starting_age' es requerido y debe ser un número");
     }
 
-    if (body.maxAge === undefined || typeof body.maxAge !== "number" || Number.isNaN(body.maxAge)) {
-        errors.push("El campo 'maxAge' es requerido y debe ser un número");
+    if (body.ending_age === undefined || typeof body.ending_age !== "number" || Number.isNaN(body.ending_age)) {
+        errors.push("El campo 'ending_age' es requerido y debe ser un número");
     }
 
-    if (typeof body.minAge === "number" && typeof body.maxAge === "number") {
-        if (body.minAge < 0) errors.push("'minAge' no puede ser negativo");
-        if (body.maxAge < 0) errors.push("'maxAge' no puede ser negativo");
-        if (body.minAge > body.maxAge) errors.push("'minAge' no puede ser mayor que 'maxAge'");
+    if (typeof body.starting_age === "number" && typeof body.ending_age === "number") {
+        if (body.starting_age < 0) errors.push("'starting_age' no puede ser negativo");
+        if (body.ending_age < 0) errors.push("'ending_age' no puede ser negativo");
+        if (body.starting_age > body.ending_age) errors.push("'starting_age' no puede ser mayor que 'ending_age'");
     }
 
     return errors;
