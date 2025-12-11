@@ -2,32 +2,32 @@ import mongoose from "mongoose";
 
 const QuestionSchema = new mongoose.Schema(
     {
-        statement: { 
-            type: String, 
-            required: true 
+        statement: {
+            type: String,
+            required: true
         },
-        score: { 
-            type: Number, 
-            required: true 
+        score: {
+            type: Number,
+            required: true
         },
-        status: { 
-            type: String, 
+        status: {
+            type: String,
             enum: ['draft', 'editing', 'published'],
             default: 'draft',
-            required: true 
+            required: true
         },
-        id_question_type: { 
-            type: mongoose.Schema.Types.ObjectId, 
-            ref: 'QuestionType', 
+        id_question_type: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'QuestionType',
             required: true,
-            unique: true
+            unique: false
         },
-        difficulty: { 
-            type: String, 
+        difficulty: {
+            type: String,
             enum: ['low', 'medium', 'high'],
             required: false
         }
-    }, 
+    },
     { timestamps: true }
 );
 

@@ -48,8 +48,9 @@ export const create = async (req: Request, res: Response) => {
 
 export const getAll = async (req: Request, res: Response) => {
     try {
+        const user_payload = req.user;
         const list = await AgeClassificationService.getAllAgeClassifications();
-        res.status(200).json(list);
+        res.status(200).json({ data: list, user_data: user_payload });
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
     }

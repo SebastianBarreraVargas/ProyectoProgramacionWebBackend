@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import { NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken';
 import * as UserService from '../services/user.service'
+import mongoose from 'mongoose';
 
 dotenv.config();
 
@@ -22,9 +23,8 @@ declare module 'express-serve-static-core' {
         user?: UserPayload;
     }
 }
-
 export async function sendToken(req: Request, res: Response) {
-    const { id_us, username } = req.query;
+    const { id_us, username, role } = req.query;
     if (!id_us || typeof id_us !== 'string') {
         return res.status(400).json({
             success: false,
@@ -47,6 +47,7 @@ export async function sendToken(req: Request, res: Response) {
     const token = jwt.sign({
         id_us,
         username,
+        role
     }, secret as string, { expiresIn: '15m' });
     return res.status(200).json({
         success: true,
@@ -66,7 +67,7 @@ export async function privateToken(req: Request, res: Response) {
         }
         const payload = jwt.verify(token, secret as string) as {
             id_us: string;
-            usename: string
+            username: string;
         };
         return res.status(200).json({
             success: true,
@@ -98,7 +99,7 @@ export async function privateToken(req: Request, res: Response) {
 }
 
 export async function verifyToken(req: Request, res: Response, next: NextFunction) {
-    const token = req.headers['authorization'] || req.query.token;
+    const token = req.headers.authorization?.split(" ")[1] || req.query.token;
     if (!token || typeof token !== 'string') {
         return res.status(400).json({
             success: false,
@@ -114,6 +115,87 @@ export async function verifyToken(req: Request, res: Response, next: NextFunctio
         } else {
             req.user = user as UserPayload;
             next();
+        }
+    });
+}
+
+export async function verifyTokenTeacher(req: Request, res: Response, next: NextFunction) {
+    const token = req.headers.authorization?.split(" ")[1] || req.query.token;
+    if (!token || typeof token !== 'string') {
+        return res.status(400).json({
+            success: false,
+            message: 'Error, token no proporcionado'
+        });
+    }
+    const payload = jwt.verify(token, secret as string, (err, user) => {
+        if (err) {
+            return res.status(401).json({
+                success: false,
+                message: 'Acceso denegado al servicio, autenticacion fallida por token expirado o incorrecto'
+            });
+        } else {
+            req.user = user as UserPayload;
+            next();
+        }
+        if (req.user.role?.toString() !== '693170ff90f140f63829c7d3') {
+            return res.status(403).json({
+                success: false,
+                message: 'Acceso denegado al servicio, el usuario no tiene privilegios de administrador'
+            });
+        }
+    });
+}
+
+export async function verifyTokenStudent(req: Request, res: Response, next: NextFunction) {
+    const token = req.headers.authorization?.split(" ")[1] || req.query.token;
+    if (!token || typeof token !== 'string') {
+        return res.status(400).json({
+            success: false,
+            message: 'Error, token no proporcionado'
+        });
+    }
+    const payload = jwt.verify(token, secret as string, (err, user) => {
+        if (err) {
+            return res.status(401).json({
+                success: false,
+                message: 'Acceso denegado al servicio, autenticacion fallida por token expirado o incorrecto'
+            });
+        } else {
+            req.user = user as UserPayload;
+            next();
+        }
+        if (req.user.role?.toString() !== '691bdd83122def7416037e23') {
+            return res.status(403).json({
+                success: false,
+                message: 'Acceso denegado al servicio, el usuario no tiene privilegios de administrador'
+            });
+        }
+    });
+}
+
+export async function verifyTokenAdmin(req: Request, res: Response, next: NextFunction) {
+    const token = req.headers.authorization?.split(" ")[1] || req.query.token;
+    if (!token || typeof token !== 'string') {
+        return res.status(400).json({
+            success: false,
+            message: 'Error, token no proporcionado'
+        });
+    }
+    const payload = jwt.verify(token, secret as string, (err, user) => {
+        if (err) {
+            return res.status(401).json({
+                success: false,
+                message: 'Acceso denegado al servicio, autenticacion fallida por token expirado o incorrecto'
+            });
+        } else {
+            req.user = user as UserPayload;
+            next();
+        }
+        if (req.user.role?.toString() !== '693a93bb5aaeea906e3597f5') {
+            return res.status(403).json({
+                success: false,
+                message: 'Acceso denegado al servicio, el usuario no tiene privilegios de administrador'
+            });
         }
     });
 }
