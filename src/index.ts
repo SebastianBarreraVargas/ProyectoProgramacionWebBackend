@@ -3,7 +3,6 @@ dotenv.config();
 
 import fs from 'fs';
 import https from 'https';
-import express from 'express';
 
 import Server from './config/server.config';
 import { SERVER_PORT } from './config/env.config';

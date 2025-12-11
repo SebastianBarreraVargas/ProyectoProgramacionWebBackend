@@ -26,7 +26,7 @@ const validatePayload = (body: { statement: string; score: number; status?: stri
         if (!Array.isArray(body.answers) || body.answers.length === 0) {
             errors.push("El campo 'answers' debe ser un arreglo no vacío");
         } else {
-            body.answers.forEach((a: any, i: number) => {
+            body.answers.forEach((a: string, i: number) => {
                 if (!a || typeof a !== "string" || !a.trim()) {
                     errors.push(`La respuesta en 'answers' índice ${i} debe ser una cadena no vacía`);
                 }

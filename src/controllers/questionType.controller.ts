@@ -6,7 +6,7 @@ const validateId = (id?: string): string | null => {
   return null;
 };
 
-const validatePayload = (body: any): string[] => {
+const validatePayload = (body: { name: string; }): string[] => {
   const errors: string[] = [];
   if (!body || typeof body !== 'object') {
     errors.push('Cuerpo de la petición inválido');
