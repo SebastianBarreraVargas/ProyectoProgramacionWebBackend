@@ -28,10 +28,11 @@ const validateIdMateria = (id_materia?: string): string | null => {
 export const create = async (req: Request, res: Response) => {
     try {
         const errors = validatePayload(req.body);
+        const user_payload = req.user;
         if (errors.length > 0) return res.status(400).json({ errors });
 
         const saved = await AreaService.createArea(req.body);
-        res.status(201).json(saved);
+        res.status(201).json({ data: saved, user_data: user_payload });
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
     }

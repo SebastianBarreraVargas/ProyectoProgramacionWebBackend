@@ -50,10 +50,11 @@ const validateTypeId = (id?: string): string | null => {
 export const create = async (req: Request, res: Response) => {
     try {
         const errors = validatePayload(req.body);
+        const user_payload = req.user;
         if (errors.length > 0) return res.status(400).json({ errors });
 
         const saved = await QuestionService.createQuestion(req.body);
-        res.status(201).json(saved);
+        res.status(201).json({ data: saved, user_data: user_payload });
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
     }
@@ -70,12 +71,13 @@ export const getAll = async (req: Request, res: Response) => {
 
 export const getById = async (req: Request, res: Response) => {
     try {
+        const user_payload = req.user;
         const idError = validateId(req.params.id);
         if (idError) return res.status(400).json({ message: idError });
 
         const item = await QuestionService.getQuestionById(req.params.id);
         if (!item) return res.status(404).json({ message: "Not found" });
-        res.status(200).json(item);
+        res.status(200).json({ data: item, user_data: user_payload });
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
     }

@@ -2,14 +2,14 @@ import mongoose from "mongoose";
 
 const QuestionTypeSchema = new mongoose.Schema(
     {
-        name_type: { 
-            type: String, 
-            required: true, 
-            unique: true 
+        name_type: {
+            type: String,
+            required: true,
+            unique: false
         },
-        description_type: { 
-            type: String, 
-            required: true, 
+        description_type: {
+            type: String,
+            required: true,
         }
     }, { timestamps: true }
 );
