@@ -14,3 +14,23 @@ export async function createRole(roleData: RoleParameter) {
         throw new Error('Error creating role: ' + (error as Error).message);
     }
 }
+
+export async function get_all_roles() {
+    try {
+        const roles = await Role.find();
+        if (roles) {
+            return {
+                result: true,
+                message: 'Datos de todos los roles registrados exitosamente',
+                data: roles
+            }
+        } else {
+            return {
+                result: false,
+                message: 'No existen roles registrados'
+            }
+        }
+    } catch (err) {
+        throw new Error('Error al obtener los datos de todos los roles: ' + (err as Error).message);
+    }
+}
