@@ -18,8 +18,7 @@ const AreaSchema = new mongoose.Schema(
         id_subject: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Subject',
-            required: true,
-            unique: false
+            required: true
         }
     },
     {
