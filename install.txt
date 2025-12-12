@@ -234,6 +234,128 @@ en caso contrario, se obtendra un error si es otro rol o si el token esta mal da
 
 =========================================================================================
 
+LISTAR TODAS:
+GET https://localhost:8444/api/question/
+OBTENER POR ID (protegido):
+GET https://localhost:8444/api/question/<id> Header: Authorization: Bearer <JWT_AQUI>
+FILTRAR POR TIPO / ESTADO / DIFICULTAD:
+GET https://localhost:8444/api/question/type/<id_question_type> GET https://localhost:8444/api/question/status/<status> GET https://localhost:8444/api/question/difficulty/<difficulty>
+ACTUALIZAR:
+PUT https://localhost:8444/api/question/<id> Body: { "status": "published", "score": 80 }
+ELIMINAR:
+DELETE https://localhost:8444/api/question/<id>
+
+========================================================================================= TOKEN (GENERAR / VER)
+
+GENERAR TOKEN:
+PASOS
+Levantar servidor:
+npm run dev
+Generar token (POST con query params):
+POST https://localhost:8444/api/token/send?id_us=<id_usuario>&username=<username>&role=<id_rol>
+NOTA: id_us, username y role deben existir en la BD.
+Respuesta (ejemplo):
+{ "success": true, "message": "Token generado correctamente", "token": "<JWT_AQUI>" }
+VER PAYLOAD (PRIVATE):
+GET https://localhost:8444/api/token/private Header: Authorization: Bearer <JWT_AQUI>
+RESPUESTA: payload decodificado (user_data).
+========================================================================================= USER (USUARIO) - CREAR / OBTENER POR ID
+
+CREAR USUARIO:
+PASOS
+Levantar servidor.
+POST crear usuario:
+POST https://localhost:8444/api/user/create Body (raw JSON): { "username": "Garabato", "name": "Sebastian", "email": "ejemplo@dominio.com", "password": "Pass1234", "role": "693170ff90f140f63829c7d3" }
+RESPUESTA: objeto usuario creado (incluye _id, createdAt).
+
+OBTENER POR ID:
+GET https://localhost:8444/api/user/get_by_id?id_us=<id_usuario>
+RESPUESTA: objeto usuario si existe.
+
+========================================================================================= ROLE (ROL) - CREAR / LISTAR
+
+CREAR ROL:
+POST https://localhost:8444/api/role/create Body: { "name": "Administrador", "description": "Permisos completos"
+}
+LISTAR ROLES (PROTEGIDO):
+GET https://localhost:8444/api/role/get_all Header: Authorization: Bearer <JWT_AQUI>
+RESPUESTA: array de roles.
+========================================================================================= SUBJECT (MATERIA) - CRUD
+
+CREAR:
+POST https://localhost:8444/api/subject/ Body: { "name": "Matemáticas", "description": "Descripción"
+}
+LISTAR:
+GET https://localhost:8444/api/subject/
+OBTENER POR ID:
+GET https://localhost:8444/api/subject/<id>
+ACTUALIZAR:
+PUT https://localhost:8444/api/subject/<id> Body: { "name": "Matemáticas Avanzadas" }
+ELIMINAR:
+DELETE https://localhost:8444/api/subject/<id>
+RESPUESTAS: objeto creado/actualizado/lista o confirmación de eliminación.
+========================================================================================= AREA - CRUD / FILTRAR POR MATERIA
+
+CREAR (REQUERIDO: token con permisos según ruta — usar verifyTokenAdmin si aplica):
+POST https://localhost:8444/api/area/ Header: Authorization: Bearer <JWT_AQUI> Body: { "name": "Álgebra", "id_subject": "<id_materia>"
+}
+LISTAR:
+GET https://localhost:8444/api/area/
+LISTAR POR MATERIA:
+GET https://localhost:8444/api/area/materia/<id_materia>
+CRUD por id:
+GET https://localhost:8444/api/area/<id> PUT https://localhost:8444/api/area/<id> Body: { "name": "..." } DELETE https://localhost:8444/api/area/<id>
+========================================================================================= QUESTION_TYPE (TIPO DE PREGUNTA) - CRUD
+
+CREAR:
+POST https://localhost:8444/api/question_type/ Body: { "name": "Opción Múltiple", "description": "Descripción"
+}
+LISTAR:
+GET https://localhost:8444/api/question_type/
+CRUD por id:
+GET https://localhost:8444/api/question_type/<id> PUT https://localhost:8444/api/question_type/<id> DELETE https://localhost:8444/api/question_type/<id>
+========================================================================================= QUESTION_AGE_CLASSIFICATION (RELACIÓN PREGUNTA–CLASIFICACIÓN EDAD) - CRUD
+
+CREAR:
+POST https://localhost:8444/api/question_age_classification/ Body: { "id_question": "<id_pregunta>", "id_age_classification": "<id_clasificacion>"
+}
+LISTAR:
+GET https://localhost:8444/api/question_age_classification/
+CRUD por id:
+GET https://localhost:8444/api/question_age_classification/<id> PUT https://localhost:8444/api/question_age_classification/<id> DELETE https://localhost:8444/api/question_age_classification/<id>
+========================================================================================= AGE CLASSIFICATION - CRUD
+
+CREAR:
+POST https://localhost:8444/api/age_classification/ Body: { "name": "Secundaria", "description": "Rango de edad..."
+}
+LISTAR:
+GET https://localhost:8444/api/age_classification/
+CRUD por id:
+GET https://localhost:8444/api/age_classification/<id> PUT https://localhost:8444/api/age_classification/<id> DELETE https://localhost:8444/api/age_classification/<id>
+========================================================================================= QUESTION (PREGUNTA) - RESUMEN (ya tiene ejemplo extendido)
+
+CREAR (PROTEGIDO):
+POST https://localhost:8444/api/question/ Header: Authorization: Bearer <JWT_AQUI> Body: { "statement": "Mencione 3 propiedades de la capa de transporte", "score": 67, "status": "draft", "id_question_type": "693a7d730e15b4ce6249b059", "difficulty": "medium"
+}
+LISTAR TODAS:
+GET https://localhost:8444/api/question/
+OBTENER POR ID (PROTEGIDO):
+GET https://localhost:8444/api/question/<id> Header: Authorization: Bearer <JWT_AQUI>
+FILTRAR:
+GET https://localhost:8444/api/question/type/<id_question_type> GET https://localhost:8444/api/question/status/<status> GET https://localhost:8444/api/question/difficulty/<difficulty>
+ACTUALIZAR:
+PUT https://localhost:8444/api/question/<id> Body: { "status": "published", "score": 80 }
+ELIMINAR:
+DELETE https://localhost:8444/api/question/<id>
+========================================================================================= ERRORES COMUNES Y NOTAS
+
+Token inválido/expirado → 401/403. Usar Authorization: Bearer <JWT>.
+IDs inexistentes (role, user, question_type, subject, etc.) → 400/404.
+Rol sin permisos → 403 (crear/editar recursos protegidos).
+Campos obligatorios faltantes → 400 (validación del modelo).
+Si usas datos de ejemplo: ejecutar npx tsx import-db.ts para poblar la BD.
+Base URL local con HTTP2: https://localhost:8444/ (asegúrate de certificados mkcert).
+
 SOLUCIÓN DE PROBLEMAS:
 - Si hay error de conexión a MongoDB: Verificar que la IP esté permitida en 
   MongoDB Atlas (Network Access -> Add IP Address -> Allow Access from Anywhere)
