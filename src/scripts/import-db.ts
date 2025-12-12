@@ -13,7 +13,9 @@ import QuestionAgeClassification from '../models/QuestionAgeClassification';
 import AgeClassification from '../models/AgeClassification';
 import Subject from '../models/Subject';
 import Area from '../models/Area';
+
 const IMPORT_FILE = './database-export.json';
+
 interface DatabaseExport {
     users?: unknown[];
     roles?: unknown[];
@@ -24,9 +26,55 @@ interface DatabaseExport {
     subjects?: unknown[];
     areas?: unknown[];
 }
+
+// ========================================
+// FUNCIÓN PARA ELIMINAR ÍNDICES PROBLEMÁTICOS
+// ========================================
+async function dropProblematicIndexes() {
+    try {
+        const areaCollection = mongoose.connection.collection('areas');
+        
+        // Obtener todos los índices
+        const indexes = await areaCollection.indexes();
+        
+        // Buscar y eliminar el índice id_materia_1 si existe
+        const problematicIndex = indexes.find(idx => idx.name === 'id_materia_1');
+        
+        if (problematicIndex) {
+            await areaCollection.dropIndex('id_materia_1');
+            console.log('    ✓ Índice problemático "id_materia_1" eliminado');
+        }
+    } catch (error) {
+        // Si el índice no existe, ignorar el error
+        if ((error as any).code !== 27) { // 27 = IndexNotFound
+            console.log('    ℹ️  No se encontró el índice problemático (esto es normal)');
+        }
+    }
+}
+
 // ========================================
 // DATOS ADICIONALES COHERENTES
 // ========================================
+function getPredefinedRoles() {
+    return [
+        { 
+            _id: new mongoose.Types.ObjectId('691bdd83122def7416037e23'),
+            role_name: 'student', 
+            role_description: 'He answers the teacher\'s questions.' 
+        },
+        { 
+            _id: new mongoose.Types.ObjectId('693170ff90f140f63829c7d3'),
+            role_name: 'teacher', 
+            role_description: 'He creates tests and exams for students' 
+        },
+        { 
+            _id: new mongoose.Types.ObjectId('693a93bb5aaeea906e3597f5'),
+            role_name: 'admin', 
+            role_description: 'He is the admin.' 
+        }
+    ];
+}
+
 function getAdditionalSubjects() {
     return [
         { materia_name: 'Física', materia_description: 'Ciencia que estudia las propiedades de la materia y la energía', materia_acronym: 'FIS' },
@@ -38,6 +86,7 @@ function getAdditionalSubjects() {
         { materia_name: 'Inglés', materia_description: 'Idioma inglés', materia_acronym: 'ENG' }
     ];
 }
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getAdditionalAreas(subjects: any[]) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -77,6 +126,7 @@ function getAdditionalAreas(subjects: any[]) {
 
     return areas;
 }
+
 function getAdditionalQuestionTypes() {
     return [
         { name_type: 'Verdadero/Falso', description_type: 'Pregunta con respuesta de verdadero o falso' },
@@ -86,6 +136,7 @@ function getAdditionalQuestionTypes() {
         { name_type: 'Completar', description_type: 'Completar espacios en blanco' }
     ];
 }
+
 function getAdditionalAgeClassifications() {
     return [
         { desc_classification: 'Infantil', starting_age: 3, ending_age: 7 },
@@ -97,6 +148,7 @@ function getAdditionalAgeClassifications() {
         { desc_classification: 'Adultos', starting_age: 25, ending_age: 100 }
     ];
 }
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getAdditionalUsers(roles: any[]) {
     const adminRole = roles.find(r => r.role_name?.toLowerCase().includes('admin'));
@@ -114,6 +166,7 @@ function getAdditionalUsers(roles: any[]) {
         { username: 'Diego Ramírez', email: 'diego.ramirez@test.com', age: 27, handle_name: 'diegoram', active: false, id_role: userRole?._id || adminRole?._id }
     ];
 }
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getAdditionalQuestions(questionTypes: any[]) {
     const multipleChoice = questionTypes.find(qt => qt.name_type?.toLowerCase().includes('múltiple') || qt.name_type?.toLowerCase().includes('multiple'));
@@ -135,6 +188,7 @@ function getAdditionalQuestions(questionTypes: any[]) {
         { statement: 'Analice las causas de la Revolución Francesa', score: 45, status: 'draft', id_question_type: defaultType._id, difficulty: 'high' }
     ];
 }
+
 // ========================================
 // FUNCIÓN PRINCIPAL DE IMPORTACIÓN
 // ========================================
@@ -143,39 +197,57 @@ async function importDatabase(): Promise<void> {
         // Verificar variables de entorno
         const mongoUri = process.env.MONGO_URI;
         const dbName = process.env.DB_NAME;
+
         if (!mongoUri || !dbName) {
             console.error('❌ Error: Variables de entorno MONGO_URI y DB_NAME son requeridas');
             process.exit(1);
         }
+
         // Verificar que el archivo existe
         if (!fs.existsSync(IMPORT_FILE)) {
             console.error(`❌ Error: No se encontró el archivo ${IMPORT_FILE}`);
             console.log('💡 Ejecutando solo con datos predefinidos...');
         }
+
         // Conectar a MongoDB
         console.log('🔌 Conectando a MongoDB...');
         await mongoose.connect(mongoUri + dbName);
         console.log('✅ Conectado a MongoDB');
+
         // Leer el archivo si existe
         let data: DatabaseExport = {};
         if (fs.existsSync(IMPORT_FILE)) {
             console.log(`\n📖 Leyendo archivo ${IMPORT_FILE}...`);
             data = JSON.parse(fs.readFileSync(IMPORT_FILE, 'utf8'));
         }
+
         console.log('\n📥 Importando y poblando colecciones...\n');
+
         // ========================================
-        // 1. ROLES (MANTENER LOS EXISTENTES)
+        // 1. ROLES (SIEMPRE CREAR LOS PREDEFINIDOS)
         // ========================================
-        console.log('  → Importando Roles (SIN MODIFICAR)...');
+        console.log('  → Importando Roles...');
+        await Role.deleteMany({});
+        
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let roles: any[] = [];
+        let allRoles: any[] = [];
+        
+        // Agregar roles predefinidos (student, teacher, admin)
+        allRoles.push(...getPredefinedRoles());
+        
+        // Agregar roles adicionales del archivo si existen
         if (data.roles && data.roles.length > 0) {
-            await Role.deleteMany({});
-            roles = await Role.insertMany(data.roles);
-            console.log(`    ✓ ${roles.length} roles importados desde archivo`);
-        } else {
-            console.log('    ⚠️ No hay roles en el archivo de exportación');
+            // Filtrar roles del archivo que no sean los predefinidos
+            const predefinedNames = ['student', 'teacher', 'admin'];
+            const additionalRoles = (data.roles as any[]).filter(
+                role => !predefinedNames.includes((role as any).role_name?.toLowerCase())
+            );
+            allRoles.push(...additionalRoles);
         }
+        
+        const roles = await Role.insertMany(allRoles);
+        console.log(`    ✓ ${roles.length} roles importados (3 predefinidos + ${roles.length - 3} adicionales)`);
+
         // ========================================
         // 2. SUBJECTS (DATOS ORIGINALES + ADICIONALES)
         // ========================================
@@ -191,12 +263,19 @@ async function importDatabase(): Promise<void> {
 
         const subjects = await Subject.insertMany(allSubjects);
         console.log(`    ✓ ${subjects.length} materias importadas (${data.subjects?.length || 0} originales + ${allSubjects.length - (data.subjects?.length || 0)} adicionales)`);
+
         // ========================================
         // 3. AREAS (DATOS ORIGINALES + ADICIONALES)
         // ========================================
         console.log('  → Importando Areas...');
+        
+        // PRIMERO: Eliminar índices problemáticos
+        await dropProblematicIndexes();
+        
+        // SEGUNDO: Limpiar la colección
         await Area.deleteMany({});
 
+        // TERCERO: Insertar los datos
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let allAreas: any[] = [];
         if (data.areas && data.areas.length > 0) {
@@ -206,6 +285,7 @@ async function importDatabase(): Promise<void> {
 
         const areas = await Area.insertMany(allAreas);
         console.log(`    ✓ ${areas.length} áreas importadas (${data.areas?.length || 0} originales + ${allAreas.length - (data.areas?.length || 0)} adicionales)`);
+
         // ========================================
         // 4. AGE CLASSIFICATIONS (DATOS ORIGINALES + ADICIONALES)
         // ========================================
@@ -221,6 +301,7 @@ async function importDatabase(): Promise<void> {
 
         const ageClassifications = await AgeClassification.insertMany(allAgeClassifications);
         console.log(`    ✓ ${ageClassifications.length} clasificaciones de edad importadas (${data.ageClassifications?.length || 0} originales + ${allAgeClassifications.length - (data.ageClassifications?.length || 0)} adicionales)`);
+
         // ========================================
         // 5. QUESTION TYPES (DATOS ORIGINALES + ADICIONALES)
         // ========================================
@@ -236,6 +317,7 @@ async function importDatabase(): Promise<void> {
 
         const questionTypes = await QuestionType.insertMany(allQuestionTypes);
         console.log(`    ✓ ${questionTypes.length} tipos de pregunta importados (${data.questionTypes?.length || 0} originales + ${allQuestionTypes.length - (data.questionTypes?.length || 0)} adicionales)`);
+
         // ========================================
         // 6. USERS (DATOS ORIGINALES + ADICIONALES)
         // ========================================
@@ -251,6 +333,7 @@ async function importDatabase(): Promise<void> {
 
         const users = await User.insertMany(allUsers);
         console.log(`    ✓ ${users.length} usuarios importados (${data.users?.length || 0} originales + ${allUsers.length - (data.users?.length || 0)} adicionales)`);
+
         // ========================================
         // 7. QUESTIONS (DATOS ORIGINALES + ADICIONALES)
         // ========================================
@@ -266,6 +349,7 @@ async function importDatabase(): Promise<void> {
 
         const questions = await Question.insertMany(allQuestions);
         console.log(`    ✓ ${questions.length} preguntas importadas (${data.questions?.length || 0} originales + ${allQuestions.length - (data.questions?.length || 0)} adicionales)`);
+
         // ========================================
         // 8. QUESTION AGE CLASSIFICATIONS
         // ========================================
@@ -308,6 +392,7 @@ async function importDatabase(): Promise<void> {
             const qac = await QuestionAgeClassification.insertMany(allQAC);
             console.log(`    ✓ ${qac.length} clasificaciones de pregunta-edad importadas`);
         }
+
         console.log('\n✅ Base de datos poblada exitosamente con datos originales y adicionales!');
         console.log('\n📊 RESUMEN:');
         console.log(`   - Roles: ${roles.length}`);
@@ -318,6 +403,7 @@ async function importDatabase(): Promise<void> {
         console.log(`   - Usuarios: ${users.length}`);
         console.log(`   - Preguntas: ${questions.length}`);
         console.log(`   - Relaciones Pregunta-Edad: ${allQAC.length}`);
+
     } catch (error) {
         console.error('❌ Error al importar la base de datos:', error);
         process.exit(1);
@@ -326,4 +412,5 @@ async function importDatabase(): Promise<void> {
         console.log('\n🔌 Conexión cerrada');
     }
 }
+
 importDatabase();
