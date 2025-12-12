@@ -13,6 +13,7 @@ lerna-debug.log*
 
 # OS
 .DS_Store
+Thumbs.db
 
 # Tests
 /coverage
@@ -41,3 +42,14 @@ database-pg/*
 # environment
 .env*
 !.env.example
+
+# Variables de Entorno
+.env
+.env.local
+.env.production
+
+# Certificados SSL
+*.pem
+*.key
+*.crt
+
