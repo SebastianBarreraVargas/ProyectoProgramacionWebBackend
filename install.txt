@@ -1,0 +1,205 @@
+=========================================================================================
+                GUÍA DE INSTALACIÓN - Proyecto Programación Web Backend
+=========================================================================================
+
+REQUISITOS PREVIOS:
+- Node.js instalado (v14 o superior), si no se cuenta con el, ejecutar en terminal:
+=========================================================================================
+    # Instalacion en Windows (usando Chocolatey):
+    choco install nodejs
+    # Instalacion en macOS (usando Homebrew):
+    brew install node
+    # Instalacion en Linux y macOS:
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+    nvm install 20
+    nvm use 20
+=========================================================================================
+- Git instalado, si no se cuenta con el, ejecutar en terminal:
+=========================================================================================
+    # Instalacion en Windows (usando Chocolatey):
+    choco install git
+    # Instalacion en macOS (usando Homebrew):
+    brew install git
+    xcode-select --install
+    # Instalacion en Linux Ubuntu/Debian:
+    sudo apt update
+    sudo apt install git
+    # Instalacion en Linux Fedora:
+    sudo dnf install git
+    # Instalacion en Linux RHEL/CentOS:
+    sudo yum install git
+    # Instalacion en Arch Linux:
+    sudo pacman -S git
+    # verificar la Instalacion con:
+    git --version
+=========================================================================================
+- Cuenta en MongoDB Atlas (o crear una durante la Instalacion)
+- MongoDB Compass instalado (browser de la base de datos), en caso de no tenerlo, seguir la
+  Instalacion en el siguiente enlace:
+=========================================================================================
+    https://www.mongodb.com/try/download/compass
+=========================================================================================
+- Postman instalado (manejo de peticiones http) en caso de no tenerlo, seguir la
+  Instalacion en el siguiente enlace:
+=========================================================================================
+    https://www.postman.com/downloads/
+=========================================================================================
+
+CONFIGURACION INICIAL:
+1. CONTAR CON EL REPOSITORIO CLONADO:
+- Ejecutar el siguiente comando en terminal:
+=========================================================================================
+    git clone https://github.com/SebastianBarreraVargas/ProyectoProgramacionWebBackend.git
+=========================================================================================
+
+2. NAVEGAR A LA RUTA DEL PROYECTO
+- Ejecutar el siguiente comando en terminal:
+=========================================================================================
+    cd ProyectoProgramacionWebBackend
+=========================================================================================
+
+3. VARIABLES DE ENTORNO:
+3.1. Crear el archivo de variables de entorno ".env":
+- Copiar el contenido de ".env.example" en un nuevo archivo ".env", para ello, ejecutar en
+  la terminal el siguiente comando:
+=========================================================================================
+    cp .env.example .env
+=========================================================================================
+3.2. Editar el archivo ".env" con sus credenciales:
+
+3.2.1. Configurar MongoDB:
+IMPORTANTE: Cada persona debe crear su propia base de datos.
+PASOS:
+- Crear una cuenta en MongoDB Atlas en el siguiente link:
+=========================================================================================
+    https://www.mongodb.com/es/cloud/atlas/register
+=========================================================================================
+- Crear un nuevo cluster (seleccionar el plan FREE)
+- Crear un usuario de base de datos (Database Access)
+- Permitir acceso desde cualquier IP (Network Access -> Add IP -> 0.0.0.0/0)
+- Obtener la cadena de conexión:
+    * Click en "Connect" -> "Connect your application"
+    * Copiar la URI (ejemplo: mongodb+srv://usuario:password@cluster.mongodb.net/)
+- Pegar la URI en MONGO_URI del archivo ".env"
+- Asegurarse que DB_NAME=WebSurfers en el archivo ".env"
+NOTA: La base de datos estará vacía inicialmente. Los modelos y colecciones se crearán 
+automáticamente al iniciar el servidor.
+
+3.2.2. Generacion del SECRET:
+- Generar un SECRET, como recomendacion usar en terminal el siguiente comando:
+=========================================================================================
+    node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+=========================================================================================
+- Una vez generado el SECRET copiarlo de la terminal a la variable de entorno SECRET
+en el archivo ".env"
+
+4. CERTIFICADOS SSL (DESARROLLO LOCAL):
+Generar los certificados con mkcert:
+- Instalar mkcert, para ello ejecutar en la terminal el siguiente comando:
+=========================================================================================
+    # Instalacion de mkcert en macOS y Linux:
+    brew install mkcert
+    # Instalacion de mkcert en Windows:
+    choco install mkcert
+=========================================================================================
+- Para generar los certificados "localhost.pem" y "localhost-key.pem", ejecutar el 
+  siguiente comando en la terminal:
+=========================================================================================
+    mkcert -install
+    mkcert localhost
+=========================================================================================
+
+5. DEPENDENCIAS:
+Instalar las dependencias necesarias para el funcionamiento del proyecto
+- Ejecutar en terminal el siguiente comando:
+=========================================================================================
+    npm install
+=========================================================================================
+
+6. EJECUCION:
+Levantar el servidor backend:
+- Ejecutar el siguiente comando en terminal:
+=========================================================================================
+    npm run dev
+=========================================================================================
+
+EJEMPLO DE USO:
+* ACCESO AL SERVICIO DE CREACION DE UNA PREGUNTA:
+- PASOS
+1. Levantar y ejecutar el servidor con el siguiente comando:
+=========================================================================================
+    npm run dev
+=========================================================================================
+2. Acceder a postman y usar el servicio especificado a continuacion (usando el metodo POST):
+=========================================================================================
+    POST http://localhost:3000/api/token/send?id_us=693164d69da63db3c677fe0e&username=Garabato&role=693170ff90f140f63829c7d3
+=========================================================================================
+NOTA: Los valores de id_us, username y id_rol deben ser valores validos tanto de id de usuario, nombre de usuario e id de rol validos existentes en la base de datos, sino no funcionara.
+3. Presionar el boton se "Send" en postman para obtener la respuesta.
+4. Copiar el valor de "token" de la respuesta obtenida a la peticion, que contara con una forma parecida a la siguiente:
+=========================================================================================
+    {
+        "success": true,
+        "message": "Token generado correctamente",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91cyI6IjY5MzE2NGQ2OWRhNjNkYjNjNjc3ZmUwZSIsInVzZXJuYW1lIjoiR2FyYWJhdG8iLCJyb2xlIjoiNjkzMTcwZmY5MGYxNDBmNjM4MjljN2QzIiwiaWF0IjoxNzY1NTY3NzgzLCJleHAiOjE3NjU1Njg2ODN9.trKJQyQQVmSJtvTScyFPTtoF0gNGXQ8KM4N66oYPmik"
+    }
+=========================================================================================
+5. Acceder a otra pestania de postman y usar el servicio especificado a continuacion (usando el metodo POST):
+=========================================================================================
+    POST https://localhost:8444/api/question/
+=========================================================================================
+6. Acceder a la seccion de "Body" en Postman y elegir la opcion "raw" y pegar los valores correspondientes a la pregunta que se pretende crear, debe seguir un formato similar al siguiente:
+=========================================================================================
+    {
+        "statement": "Mencione 3 propiedades de la capa de transporte",
+        "score": 67,
+        "status": "draft",
+        "id_question_type": "693a7d730e15b4ce6249b059",
+        "difficulty": "medium"
+    }
+=========================================================================================
+7. Seleccionar la seccion de "Authorization" en Postman y seleccionar la opcion de "Bearer Token".
+8. En la entrada de texto asociada a la opcion "Bearer Token", pegar el token generado.
+9. Presionar el boton se "Send" en postman para obtener la respuesta.
+10. Si los datos del usuario ingresados en el Paso 2. son validos y ademas el id del rol ingresado corresponde al id de administrador se obtendra la siguiente respuesta:
+=========================================================================================
+    {
+        "data": {
+            "statement": "Mencione 3 propiedades de la capa de transporte",
+            "score": 67,
+            "status": "draft",
+            "id_question_type": "693a7d730e15b4ce6249b059",
+            "difficulty": "medium",
+            "_id": "693c6ec3e8597b7d0e82796d",
+            "createdAt": "2025-12-12T19:36:35.458Z",
+            "updatedAt": "2025-12-12T19:36:35.458Z",
+            "__v": 0
+    },
+        "user_data": {
+            "id_us": "693164d69da63db3c677fe0e",
+            "username": "Garabato",
+            "role": "693170ff90f140f63829c7d3",
+            "iat": 1765568186,
+            "exp": 1765569086
+        }
+    }
+=========================================================================================
+en caso contrario, se obtendra un error si es otro rol o si el token esta mal dado.
+
+
+=========================================================================================
+
+SOLUCIÓN DE PROBLEMAS:
+- Si hay error de conexión a MongoDB: Verificar que la IP esté permitida en 
+  MongoDB Atlas (Network Access -> Add IP Address -> Allow Access from Anywhere)
+- Si no funcionan los certificados SSL: Asegurarse de haber ejecutado 
+  "mkcert -install" primero
+- Si hay errores de dependencias: Eliminar node_modules y package-lock.json, 
+  luego ejecutar "npm install" nuevamente
+- Si el puerto 3000 está ocupado: Cambiar SERVER_PORT en el archivo .env
+
+=========================================================================================
+
+SOPORTE:
+Para reportar problemas o sugerencias, crear un issue en:
+https://github.com/SebastianBarreraVargas/ProyectoProgramacionWebBackend/issues
