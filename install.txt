@@ -58,16 +58,35 @@ CONFIGURACION INICIAL:
     cd ProyectoProgramacionWebBackend
 =========================================================================================
 
-3. VARIABLES DE ENTORNO:
-3.1. Crear el archivo de variables de entorno ".env":
+3. CONFIGURACION AUTOMATICA (OPCIONAL):
+Si deseas realizar la configuracion de forma automatica, ejecuta el siguiente script:
+=========================================================================================
+    # En Linux y macOS:
+    bash src/scripts/setup.sh
+    # En Windows (usando Git Bash):
+    bash src/scripts/setup.sh
+=========================================================================================
+Este script realizara automaticamente:
+- Creacion del archivo .env
+- Generacion de certificados SSL
+- Instalacion de dependencias (opcional)
+- Poblacion de la base de datos con datos de ejemplo (opcional)
+
+NOTA: Si ejecutas el script de configuracion automatica, puedes omitir los pasos 4, 5, 
+6 y 7. Asegurate de editar el archivo .env con tus credenciales de MongoDB y SECRET.
+
+Si prefieres la configuracion manual, continua con los siguientes pasos:
+
+4. VARIABLES DE ENTORNO:
+4.1. Crear el archivo de variables de entorno ".env":
 - Copiar el contenido de ".env.example" en un nuevo archivo ".env", para ello, ejecutar en
   la terminal el siguiente comando:
 =========================================================================================
     cp .env.example .env
 =========================================================================================
-3.2. Editar el archivo ".env" con sus credenciales:
+4.2. Editar el archivo ".env" con sus credenciales:
 
-3.2.1. Configurar MongoDB:
+4.2.1. Configurar MongoDB:
 IMPORTANTE: Cada persona debe crear su propia base de datos.
 PASOS:
 - Crear una cuenta en MongoDB Atlas en el siguiente link:
@@ -85,7 +104,7 @@ PASOS:
 NOTA: La base de datos estará vacía inicialmente. Los modelos y colecciones se crearán 
 automáticamente al iniciar el servidor.
 
-3.2.2. Generacion del SECRET:
+4.2.2. Generacion del SECRET:
 - Generar un SECRET, como recomendacion usar en terminal el siguiente comando:
 =========================================================================================
     node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
@@ -93,12 +112,12 @@ automáticamente al iniciar el servidor.
 - Una vez generado el SECRET copiarlo de la terminal a la variable de entorno SECRET
 en el archivo ".env"
 
-3.2.3. Configuración de puertos:
+4.2.3. Configuración de puertos:
 - Asegurarse de que los puertos 3000, 8443 y 8444 esten disponibles
 - Si alguno de los puertos (3000, 8443, 8444) está ocupado: Cambiar los valores 
   SERVER_PORT, HTTPS_PORT o HTTP2_PORT correspondientes en el archivo .env
 
-4. CERTIFICADOS SSL (DESARROLLO LOCAL):
+5. CERTIFICADOS SSL (DESARROLLO LOCAL):
 Generar los certificados con mkcert:
 - Instalar mkcert, para ello ejecutar en la terminal el siguiente comando:
 =========================================================================================
@@ -114,14 +133,36 @@ Generar los certificados con mkcert:
     mkcert localhost
 =========================================================================================
 
-5. DEPENDENCIAS:
+6. DEPENDENCIAS:
 Instalar las dependencias necesarias para el funcionamiento del proyecto
 - Ejecutar en terminal el siguiente comando:
 =========================================================================================
     npm install
 =========================================================================================
 
-6. EJECUCION:
+7. POBLAR LA BASE DE DATOS (OPCIONAL):
+El proyecto incluye un script para poblar tu base de datos con datos de ejemplo y prueba.
+Este script importara:
+- Roles del sistema (Administrador, Usuario, Profesor)
+- Materias academicas (Matematicas, Fisica, Quimica, Biologia, etc.)
+- Areas de conocimiento relacionadas con las materias
+- Tipos de pregunta (Opcion Multiple, Verdadero/Falso, Respuesta Corta, etc.)
+- Clasificaciones de edad (Infantil, Primaria, Secundaria, Universidad, Adultos)
+- Usuarios de ejemplo con diferentes roles
+- Preguntas de ejemplo con diferentes dificultades y estados
+- Relaciones entre preguntas y clasificaciones de edad
+
+Para poblar la base de datos, ejecutar el siguiente comando en terminal:
+=========================================================================================
+    npx ts-node src/scripts/import-db.ts
+=========================================================================================
+
+NOTA: Este paso es opcional. Si prefieres comenzar con una base de datos vacia, 
+omitelo y las colecciones se crearan automaticamente al iniciar el servidor. Los datos 
+de ejemplo son utiles para probar la aplicacion sin necesidad de crear manualmente 
+cada elemento.
+
+8. EJECUCION:
 Levantar el servidor backend:
 - Ejecutar el siguiente comando en terminal:
 =========================================================================================

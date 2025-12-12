@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 import { NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken';
 import * as UserService from '../services/user.service'
-import mongoose from 'mongoose';
 
 dotenv.config();
 
@@ -127,7 +126,7 @@ export async function verifyTokenTeacher(req: Request, res: Response, next: Next
             message: 'Error, token no proporcionado'
         });
     }
-    const payload = jwt.verify(token, secret as string, (err, user) => {
+    jwt.verify(token, secret as string, (err, user) => {
         if (err) {
             return res.status(401).json({
                 success: false,
@@ -154,7 +153,7 @@ export async function verifyTokenStudent(req: Request, res: Response, next: Next
             message: 'Error, token no proporcionado'
         });
     }
-    const payload = jwt.verify(token, secret as string, (err, user) => {
+    jwt.verify(token, secret as string, (err, user) => {
         if (err) {
             return res.status(401).json({
                 success: false,
@@ -181,7 +180,7 @@ export async function verifyTokenAdmin(req: Request, res: Response, next: NextFu
             message: 'Error, token no proporcionado'
         });
     }
-    const payload = jwt.verify(token, secret as string, (err, user) => {
+    jwt.verify(token, secret as string, (err, user) => {
         if (err) {
             return res.status(401).json({
                 success: false,

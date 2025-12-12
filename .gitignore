@@ -53,3 +53,6 @@ database-pg/*
 *.key
 *.crt
 
+# Scripts y datos de exportacion de base de datos (privados)
+src/scripts/export-db.ts
+database-export.json
