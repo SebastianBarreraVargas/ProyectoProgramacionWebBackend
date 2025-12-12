@@ -139,7 +139,7 @@ EJEMPLO DE USO:
 =========================================================================================
     POST https://localhost:8444/api/token/send?id_us=693164d69da63db3c677fe0e&username=Garabato&role=693170ff90f140f63829c7d3
 =========================================================================================
-NOTA: Los valores de id_us, username y id_rol deben ser valores validos tanto de id de usuario, nombre de usuario e id de rol validos existentes en la base de datos, sino no funcionara.
+NOTA: Los valores de id_us, username y role deben ser valores validos tanto de id de usuario, nombre de usuario e id de rol validos existentes en la base de datos, sino no funcionara.
 3. Presionar el boton se "Send" en postman para obtener la respuesta.
 4. Copiar el valor de "token" de la respuesta obtenida a la peticion, que contara con una forma parecida a la siguiente:
 =========================================================================================
